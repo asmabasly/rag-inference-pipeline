@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "rag"
+version = "0.1.0"
+description = ""
+authors = ["asmabasly <asmabasly0@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+langchain-community = "^0.2.11"
+qdrant-client = "^1.10.1"
+pypdf2 = "^3.0.1"
+langchain-ollama = "^0.1.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
