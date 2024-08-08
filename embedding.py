@@ -7,31 +7,19 @@ import numpy as np
 def get_dummy_embeddings(texts):
     return [np.random.rand(128) for _ in texts]
 
-def store_pdf_text_in_qdrant(qdrant_client, pdf_text, batch_size=100):
-    if qdrant_client is None:
-        print("Qdrant client is not initialized.")
-        return
+def store_pdf_text_in_qdrant(qdrant_client, pdf_text):
+    documents = pdf_text.split("\n\n")  # Split by paragraphs
 
-    def chunks(lst, n):
-        """Yield successive n-sized chunks from lst."""
-        for i in range(0, len(lst), n):
-            yield lst[i:i + n]
+    embeddings = get_dummy_embeddings(documents)
 
-    try:
-        for batch in chunks(pdf_text, batch_size):
-            points = [
+    for i, embedding in enumerate(embeddings):
+        qdrant_client.upsert(
+            collection_name="my_collection",
+            points=[
                 {
                     "id": i,
-                    "vector": get_dummy_embeddings(text),
-                    "payload": {"text": text}
+                    "vector": embedding.tolist(),
+                    "payload": {"text": documents[i]},
                 }
-                for i, text in enumerate(batch)
             ]
-            qdrant_client.upsert(
-                collection_name="my_collection",
-                points=points
-            )
-        print("PDF text successfully stored in Qdrant.")
-    except Exception as e:
-        print(f"Error during upsert operation: {e}")
-
+        )

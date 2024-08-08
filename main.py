@@ -9,7 +9,7 @@ def main():
     qdrant_client = initialize_qdrant()
 
     # Extract and store PDF text
-    pdf_text = extract_text_from_pdf("main_document3.pdf")
+    pdf_text = extract_text_from_pdf("circulaire.pdf")
     store_pdf_text_in_qdrant(qdrant_client, pdf_text)
 
     # Example query
@@ -18,5 +18,4 @@ def main():
     print("Response:", response)
 
 if __name__ == "__main__":
-    #socket.getaddrinfo('localhost', 8000)
     main()
