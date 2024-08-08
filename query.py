@@ -9,7 +9,7 @@ def query_rag(qdrant_client, question):
     query_embedding = get_dummy_embeddings([question])[0]
 
     search_result = qdrant_client.search(
-        collection_name="my_collection",
+        collection_name="oratio",
         query_vector=query_embedding,
         limit=5
     )
