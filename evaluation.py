@@ -1,12 +1,15 @@
 from datasets import Dataset
 from ragas import evaluate
+from langchain.chains.retrieval import create_retrieval_chain
 from ragas.metrics import (
     faithfulness,
     answer_relevancy,
     context_recall,
     context_precision,
 )
-from langchain.chains.retrieval_qa.base import RetrievalQA
+from query import query_rag
+from embedding import get_dummy_embeddings
+from qdrant_setup import initialize_qdrant
 
 # Example questions and ground truths from your document
 questions = [
@@ -27,18 +30,21 @@ ground_truths = [
 answers = []
 contexts = []
 
+qdrant_client = initialize_qdrant()
+for query in questions:
+    answer = query_rag(qdrant_client, query)
+    answers.append(answer)
+    
+    search_result = qdrant_client.search(
+        collection_name="oratio",
+        query_vector=get_dummy_embeddings([query])[0],
+        limit=5
+    )
+    context = [hit.payload['text'] for hit in search_result]
+    contexts.append(context)
+
 # Example: Using a retrieval QA chain to generate answers
 # Replace this with your actual retrieval and QA chain
-retrieval_qa = RetrievalQA()  # Initialize your retrieval QA instance
-
-for query in questions:
-    answer = retrieval_qa.invoke(query)
-    context_docs = retrieval_qa.retriever.get_relevant_documents(query)
-    context_text = [doc.page_content for doc in context_docs]
-
-    answers.append(answer)
-    contexts.append(context_text)
-
 # Prepare data for Ragas evaluation
 data = {
     "question": questions,
