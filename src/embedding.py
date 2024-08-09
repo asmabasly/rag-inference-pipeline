@@ -2,6 +2,14 @@ from langchain_community.embeddings import BedrockEmbeddings
 # Uncomment the following import if using Ollama embeddings
 # from langchain_community.llms.ollama import OllamaEmbeddings
 import numpy as np
+from langchain_community.embeddings.ollama import OllamaEmbeddings
+
+# Initialize the Ollama Mistral embeddings
+embedder = OllamaEmbeddings(model="mistral")
+
+def generate_embeddings(texts):
+    return embedder.embed_documents(texts)
+
 
 # Dummy embedding function (replace with actual if available)
 def get_dummy_embeddings(texts):

@@ -14,7 +14,13 @@ langchain-ollama = "^0.1.1"
 ragas = "^0.1.13"
 langchain = "^0.2.12"
 langchain-core = "^0.2.29"
+langchain-huggingface = "^0.0.3"
+pypdf = "^4.3.1"
+utils = "^1.0.2"
 
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^6.29.5"
 
 [build-system]
 requires = ["poetry-core"]
