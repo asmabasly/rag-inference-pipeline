@@ -9,7 +9,7 @@ def main():
     qdrant_client = initialize_qdrant()
 
     # Extract and store PDF text
-    pdf_text = extract_text_from_pdf("circulaire.pdf")
+    pdf_text = extract_text_from_pdf("C:\Users\Tifa\Desktop\rag\src\data\circulaire.pdf")
     store_pdf_text_in_qdrant(qdrant_client, pdf_text)
 
     # Example query
