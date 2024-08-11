@@ -1,13 +1,11 @@
-from ragas.langchain.evalchain import RagasEvaluatorChain
+import requests
+import json
+# Initialize Qdrant client
+
+import numpy as np
 from qdrant_client import QdrantClient
-#from langchain_community.llms.ollama import Ollama
-from ragas.metrics import (
-    faithfulness,
-    answer_relevancy,
-    context_recall,
-    context_precision,
-)
-from ragas import evaluate
+from qdrant_client.models import Filter, FieldCondition, Range
+from qdrant_client.http import models
 
 class OLLAMA:
     def __init__(self, model_name, api_endpoint='http://localhost:11434/api/generate', **kwargs):
@@ -18,71 +16,86 @@ class OLLAMA:
         print(f"Initialized OLLAMA with model_name: {model_name}, api_endpoint: {api_endpoint}, kwargs: {self.kwargs}")
 
     def predict(self, question, **kwargs):
-        output = ""
+        complete_response = ""
         payload = {'model': self.model_name, 'prompt': question, **self.kwargs, **kwargs}
         with self.session.post(self.api_endpoint, json=payload, stream=True) as r:
             if r.status_code == 200:
                 for line in r.iter_lines():
                     if line:
-                        j = json.loads(line.decode('utf-8'))
-                        output += j.get("response", "")
-                        if j.get("done", True):
+                        decoded_line = line.decode('utf-8')
+                        json_response = json.loads(decoded_line)
+                        complete_response += json_response.get("response", "")
+                        if json_response.get("done", False):
                             break
             else:
                 print(f"Error: Received status code {r.status_code}")
-        return output.strip()
+        return complete_response.strip()
 
-    def __call__(self, question, **kwargs):
-        return self.predict(question, **kwargs)
+# Example usage
+ollama_model = OLLAMA(model_name="mistral")
+#response = ollama_model.predict("Sample question?")
+#print("Response:", response)
 
-# Initialize OLLAMA with Mistral model
-mistral_model = OLLAMA(model_name="mistral")
 
-# Initialize your OLLAMA model
-#ollama_model = Ollama(model_name="mistral", api_endpoint="http://localhost:11434/api/generate")
 
-# Connect to your Qdrant instance
-qdrant_client = QdrantClient(host="localhost", port=6333)
+# Initialize the Qdrant client
+client = QdrantClient(host='localhost', port=6333)
 
-# Setup the evaluator chain with OLLAMA and Qdrant
-evaluator_chain = RagasEvaluatorChain(
-    llm=mistral_model,
-    embeddings_db=qdrant_client
-)
+# Function to fetch document content using metadata filtering
+def fetch_documents_with_filter(client, collection_name):
+    # Assuming you have a field like 'document_id' or similar to filter on
 
-def fetch_data_from_qdrant(collection_name):
-    # Fetch data from a Qdrant collection
-    # This is a simplified example. You might need to paginate or use filters based on your setup.
-    response = qdrant_client.get(collection_name, output_fields=["text"])
-    return [item['text'] for item in response['result']['hits']]
+    # Dummy vector for the purpose of completing the API call structure
+    query_vector = np.random.rand(4096)  # Ensure dimensionality matches your Qdrant configuration
 
-def fetch_embeddings_from_qdrant(client, collection_name, document_ids):
-    embeddings = []
-    for doc_id in document_ids:
-        response = client.get(
-            collection_name=collection_name,
-            document_id=doc_id,
-            output_fields=["embedding"]
-        )
-        embeddings.append(response['result']['hits'][0]['embedding'])
-    return embeddings
+    # Perform the search with filtering
+    hits = client.search(
+        collection_name=collection_name,
+        query_vector=query_vector,
+        limit=1  # Adjust based on how many documents you expect to fetch
+    )
 
-# Assuming your collection is named 'my_collection'
-dataset = fetch_data_from_qdrant('oratio2')
-# Format dataset if necessary
-formatted_dataset = [{'prompt': text, 'expected_response': 'some_expected_response'} for text in dataset]
+    # Extract document contents or other relevant info
+    documents = []
+    for hit in hits:
+        documents.append(hit.payload)  # Adjust attribute access based on actual response structure
 
-metrics = [context_precision, faithfulness]
+    return documents
 
-# Assuming embeddings are stored and we are ready to evaluate
-evaluation_embeddings = fetch_embeddings_from_qdrant(qdrant_client, 'oratio2', range(len(dataset)))
+# Example usage
+documents = fetch_documents_with_filter(client, 'oratio2')
+# Assuming you have these installed
+from ragas import evaluate  # Update this import based on your actual library
 
-# Run the evaluation, assuming Ragas can use these embeddings directly
-results = evaluate(
-    dataset=formatted_dataset,
-    llm=mistral_model,
-    embeddings=evaluation_embeddings,  # Pass embeddings directly if supported
-    metrics=metrics
-)
+# Sample questions and their expected ground truth answers
+questions = [
+    "Quelle est la date de la circulaire mentionnée?",
+    "Quelles sont les nouvelles directives pour la mise en œuvre?",
+]
 
-print("Evaluation Results:", results)
+ground_truths = [
+    "La circulaire est datée du 5 août 2023.",
+    "Les nouvelles directives stipulent que toutes les unités doivent suivre les procédures mises à jour.",
+]
+
+# Assume you have collected responses from OLLAMA
+responses = []
+for question in questions:
+    prompt = f"Context: {documents}\nQuestion: {question}\nAnswer:"
+    response = ollama_model.predict(prompt)
+    responses.append(response)
+
+# Create a dataset for Ragas evaluation
+dataset = {
+    "question": questions,
+    "response": responses,
+    "ground_truth": ground_truths
+}
+
+# Assuming evaluate function is ready to use such a dataset
+metrics = ['faithfulness', 'answer_relevancy', 'context_precision', 'context_recall']
+evaluation_results = evaluate(dataset, metrics=metrics)
+print(evaluation_results)
+
+
+
