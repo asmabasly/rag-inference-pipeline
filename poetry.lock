@@ -156,17 +156,6 @@ test = ["anyio[trio]", "coverage[toml] (>=7)", "exceptiongroup (>=1.2.0)", "hypo
 trio = ["trio (>=0.23)"]
 
 [[package]]
-name = "appdirs"
-version = "1.4.4"
-description = "A small Python module for determining appropriate platform-specific dirs, e.g. a \"user data dir\"."
-optional = false
-python-versions = "*"
-files = [
-    {file = "appdirs-1.4.4-py2.py3-none-any.whl", hash = "sha256:a841dacd6b99318a741b166adb07e19ee71a274450e68237b4650ca1055ab128"},
-    {file = "appdirs-1.4.4.tar.gz", hash = "sha256:7d5d0167b2b1ba821647616af46a749d1c653740dd0d2415100fe26e27afdf41"},
-]
-
-[[package]]
 name = "appnope"
 version = "0.1.4"
 description = "Disable App Nap on macOS >= 10.9"
@@ -1431,22 +1420,6 @@ files = [
 [package.dependencies]
 langchain-core = ">=0.2.20,<0.3.0"
 ollama = ">=0.3.0,<1"
-
-[[package]]
-name = "langchain-openai"
-version = "0.1.20"
-description = "An integration package connecting OpenAI and LangChain"
-optional = false
-python-versions = "<4.0,>=3.8.1"
-files = [
-    {file = "langchain_openai-0.1.20-py3-none-any.whl", hash = "sha256:232ebfe90b1898ef7cf181e364d45191edcf04bfc31b292ecaa1d2121942c28e"},
-    {file = "langchain_openai-0.1.20.tar.gz", hash = "sha256:2c91e9f771541076b138e65dd4c5427b26957a2272406a7f4ee747d7896f9b35"},
-]
-
-[package.dependencies]
-langchain-core = ">=0.2.26,<0.3.0"
-openai = ">=1.32.0,<2.0.0"
-tiktoken = ">=0.7,<1"
 
 [[package]]
 name = "langchain-text-splitters"
@@ -2900,22 +2873,18 @@ fastembed-gpu = ["fastembed-gpu (==0.2.7)"]
 
 [[package]]
 name = "ragas"
-version = "0.1.13"
+version = "0.0.22"
 description = ""
 optional = false
 python-versions = "*"
 files = [
-    {file = "ragas-0.1.13-py3-none-any.whl", hash = "sha256:919b3f91c57d6605d37b805a7f365c4a04be34577a3ec54d000c66056b3f005f"},
-    {file = "ragas-0.1.13.tar.gz", hash = "sha256:18b5b8aa6e6033ea4b8cd6388afae43ca762579d5cf5b533576ef952c1a5e438"},
+    {file = "ragas-0.0.22-py3-none-any.whl", hash = "sha256:528d7f8c539d1499885fe4316bf791f9d3e2ae3d72e597af3ffba83adfc84625"},
+    {file = "ragas-0.0.22.tar.gz", hash = "sha256:925c03729fa6a3826b970ad53772d6726ecd1046b13a44f4fe97524a4341495c"},
 ]
 
 [package.dependencies]
-appdirs = "*"
 datasets = "*"
 langchain = "*"
-langchain-community = "*"
-langchain-core = "*"
-langchain-openai = "*"
 nest-asyncio = "*"
 numpy = "*"
 openai = ">1"
@@ -4135,4 +4104,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "a1fb471779228705f9b66be243bd55ed74c4e25b1f89d028e0ae6e63e627a894"
+content-hash = "4bba1dcdde4b8c2f97dff7dbb0b3074abf6fb06e1f9dfd1989d440c35d202c97"
