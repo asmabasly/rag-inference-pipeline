@@ -6,7 +6,9 @@ import numpy as np
 from qdrant_client import QdrantClient
 from qdrant_client.models import Filter, FieldCondition, Range
 from qdrant_client.http import models
-
+import pandas as pd
+from ragas.metrics import faithfulness, answer_relevancy, context_precision, context_recall 
+i
 class OLLAMA:
     def __init__(self, model_name, api_endpoint='http://localhost:11434/api/generate', **kwargs):
         self.model_name = model_name
@@ -42,60 +44,74 @@ ollama_model = OLLAMA(model_name="mistral")
 client = QdrantClient(host='localhost', port=6333)
 
 # Function to fetch document content using metadata filtering
-def fetch_documents_with_filter(client, collection_name):
-    # Assuming you have a field like 'document_id' or similar to filter on
-
-    # Dummy vector for the purpose of completing the API call structure
+def fetch_and_format_documents(client, collection_name):
+    # Fetch documents with a dummy vector
     query_vector = np.random.rand(4096)  # Ensure dimensionality matches your Qdrant configuration
-
-    # Perform the search with filtering
     hits = client.search(
         collection_name=collection_name,
         query_vector=query_vector,
-        limit=1  # Adjust based on how many documents you expect to fetch
+        limit=1  # Adjust based on the needs
     )
-
-    # Extract document contents or other relevant info
+    
+    # Extract and format document contents
     documents = []
     for hit in hits:
-        documents.append(hit.payload)  # Adjust attribute access based on actual response structure
-
-    return documents
+        # Assuming 'payload' and 'text' hold the document content; adjust as per your actual data structure
+        document_text = hit.payload['text']
+        documents.append(document_text.replace('\n', ' ').strip())
+    
+    return " ".join(documents)  # Join all documents into a single string if there are multiple
 
 # Example usage
-documents = fetch_documents_with_filter(client, 'oratio2')
+documents = fetch_and_format_documents(client, 'oratio2')
 # Assuming you have these installed
 from ragas import evaluate  # Update this import based on your actual library
 
-# Sample questions and their expected ground truth answers
+from datasets import Dataset
+
+# Example questions and their expected ground truth answers
 questions = [
     "Quelle est la date de la circulaire mentionnée?",
     "Quelles sont les nouvelles directives pour la mise en œuvre?",
 ]
-
+# Expected ground truth answers
 ground_truths = [
-    "La circulaire est datée du 5 août 2023.",
-    "Les nouvelles directives stipulent que toutes les unités doivent suivre les procédures mises à jour.",
+    "La circulaire est datée du 24 septembre 1987.",
+    "Les nouvelles directives stipulent que toutes les unités doivent suivre les procédures mises à jour."
 ]
 
-# Assume you have collected responses from OLLAMA
 responses = []
 for question in questions:
     prompt = f"Context: {documents}\nQuestion: {question}\nAnswer:"
     response = ollama_model.predict(prompt)
     responses.append(response)
 
-# Create a dataset for Ragas evaluation
-dataset = {
+data = {
     "question": questions,
-    "response": responses,
+    "contexts":  [[documents] for _ in questions],  # Use the same flattened context for each question
+    "answer": responses,
     "ground_truth": ground_truths
 }
 
-# Assuming evaluate function is ready to use such a dataset
-metrics = ['faithfulness', 'answer_relevancy', 'context_precision', 'context_recall']
-evaluation_results = evaluate(dataset, metrics=metrics)
-print(evaluation_results)
+from datasets import Dataset, Features, Value, Sequence
+
+features = Features({
+    'question': Value('string'),
+    'contexts': Sequence(Value('string')),  # Ensuring contexts is a sequence of strings
+    'answer': Value('string'),
+    'ground_truth': Sequence(Value('string'))
+})
+
+dataset = Dataset.from_dict(data)
 
 
+# Run the evaluation
+evaluation_results = evaluate(dataset, metrics=[faithfulness, answer_relevancy, context_precision, context_recall])
+score_df = evaluation_results.to_pandas()
+score_df.to_csv("EvaluationScores.csv", encoding="utf-8", index=False)
 
+score_df[['faithfulness', 'answer_relevancy', 'context_precision','context_recall']].mean(axis=0)
+#print("Evaluation Results:", evaluation_results)
+
+# Assume you have collected responses from OLLAMA
+OPENAI_API_KEY = "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"
