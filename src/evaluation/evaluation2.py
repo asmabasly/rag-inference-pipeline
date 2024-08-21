@@ -8,7 +8,7 @@ from qdrant_client.models import Filter, FieldCondition, Range
 from qdrant_client.http import models
 import pandas as pd
 from ragas.metrics import faithfulness, answer_relevancy, context_precision, context_recall 
-i
+
 class OLLAMA:
     def __init__(self, model_name, api_endpoint='http://localhost:11434/api/generate', **kwargs):
         self.model_name = model_name
@@ -114,4 +114,3 @@ score_df[['faithfulness', 'answer_relevancy', 'context_precision','context_recal
 #print("Evaluation Results:", evaluation_results)
 
 # Assume you have collected responses from OLLAMA
-OPENAI_API_KEY = "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"

@@ -23,12 +23,12 @@ def clean_text(text, is_table=False):
     else:
         # Normalize spaces and remove special characters in regular text
         text = re.sub(r'\s+', ' ', text)
-        text = re.sub(r'[^a-zA-Z0-9.,\s]', ' ', text)
-        text = re.sub(r'[^\w.,\s]', ' ', text)
+        text = re.sub(r'[^a-zA-Z0-9é\s]', ' ', text)
+        text = re.sub(r'[^\w.,\':;\s]', ' ', text)
 
     # Replace 'ROWEND' with actual newlines if needed or handle as you see fit
         text = re.sub(r' ROWEND ', '\n', text)
-
+        text = re.sub(r' +', ' ', text)
     text = text.strip()
     return text
 
