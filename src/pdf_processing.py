@@ -7,3 +7,6 @@ def extract_text_from_pdf(file_path):
         for page in reader.pages:
             text += page.extract_text()
     return text
+
+#pdf_text = extract_text_from_pdf("path/to/your/document.pdf")
+#text_chunks = pdf_text.split("\n\n")

@@ -18,7 +18,7 @@ def get_dummy_embeddings(texts):
 def store_pdf_text_in_qdrant(qdrant_client, pdf_text):
     documents = pdf_text.split("\n\n")  # Split by paragraphs
 
-    embeddings = get_dummy_embeddings(documents)
+    embeddings = generate_embeddings(documents)
 
     for i, embedding in enumerate(embeddings):
         qdrant_client.upsert(

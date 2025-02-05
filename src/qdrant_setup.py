@@ -4,7 +4,7 @@ from qdrant_client.http.models import VectorParams, Distance
 def initialize_qdrant():
     try:
         qdrant_client = QdrantClient(host="localhost", port=6333)
-        collection_name = "oratio"
+        collection_name = "collection1"
 
         if not qdrant_client.collection_exists(collection_name):
             qdrant_client.create_collection(

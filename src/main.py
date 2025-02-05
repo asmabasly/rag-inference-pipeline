@@ -2,15 +2,15 @@ from qdrant_setup import initialize_qdrant
 from pdf_processing import extract_text_from_pdf
 from embedding import store_pdf_text_in_qdrant
 from query import query_rag
-import socket
+from cleaningText import processed_text
 
 def main():
     # Initialize Qdrant (ensure it is running separately)
     qdrant_client = initialize_qdrant()
 
     # Extract and store PDF text
-    pdf_text = extract_text_from_pdf("C:\Users\Tifa\Desktop\rag\src\data\circulaire.pdf")
-    store_pdf_text_in_qdrant(qdrant_client, pdf_text)
+    #pdf_text = extract_text_from_pdf(r"C:\Users\Tifa\Downloads\rag\src\data")
+    store_pdf_text_in_qdrant(qdrant_client, processed_text)
 
     # Example query
     question = " Quel est le délai pour déclarer les avoirs étrangers pour les Tunisiens ayant changé de résidence ?"

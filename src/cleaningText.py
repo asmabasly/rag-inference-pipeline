@@ -8,7 +8,7 @@ def extract_text_from_pdf(pdf_path):
             all_text += page.extract_text()
     return all_text
 
-pdf_path = r'C:\Users\Tifa\Desktop\rag\src\data\circulaire.pdf'
+pdf_path = r'C:\Users\Tifa\Downloads\rag\src\data\circulaire.pdf'
 pdf_text = extract_text_from_pdf(pdf_path)
 print(pdf_text)
 
