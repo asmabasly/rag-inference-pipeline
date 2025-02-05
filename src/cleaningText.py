@@ -1,6 +1,6 @@
 import pdfplumber
 import re
-
+import PyPDF2
 def extract_text_from_pdf(pdf_path):
     with pdfplumber.open(pdf_path) as pdf:
         all_text = ''
@@ -8,6 +8,15 @@ def extract_text_from_pdf(pdf_path):
             all_text += page.extract_text()
     return all_text
 
+"""
+def extract_text_from_pdf(file_path):
+    with open(file_path, 'rb') as file:
+        reader = PyPDF2.PdfReader(file)
+        text = ''
+        for page in reader.pages:
+            text += page.extract_text()
+    return text
+"""
 pdf_path = 'put/your/path/here/data.pdf'
 pdf_text = extract_text_from_pdf(pdf_path)
 print(pdf_text)

@@ -4,12 +4,12 @@ from langchain_community.llms.ollama import Ollama
 ollama_client = Ollama(model="mistral")
 
 def query_rag(qdrant_client, question):
-    from embedding import get_dummy_embeddings
+    from embedding import generate_embeddings
 
-    query_embedding = get_dummy_embeddings([question])[0]
+    query_embedding = generate_embeddings([question])[0]
 
     search_result = qdrant_client.search(
-        collection_name="oratio",
+        collection_name="collection1",
         query_vector=query_embedding,
         limit=5
     )
