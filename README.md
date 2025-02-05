@@ -5,13 +5,8 @@ A **Retrieval-Augmented Generation (RAG)** pipeline that integrates **Qdrant** f
 
 ## 📌 **Table of Contents**
 - [Installation](#-installation)
-- [Running the Pipeline](#running-the-pipeline)
-- [Qdrant Setup](#qdrant-setup)
-- [Ollama Setup](#ollama-setup)
-- [Modifying Paths & Queries](#modifying-paths--queries)
-- [Example Commands](#example-commands)
-- [Contributing](#contributing)
-- [License](#license)
+- [Modifying Paths & Queries](#-modifying-paths--queries)
+- [Running the Pipeline](#-running-the-pipeline)
 
 ---
 
@@ -26,7 +21,7 @@ Ensure you have Docker installed:
   curl -fsSL https://get.docker.com | sh
 
 -  **Windows**: 
-Download and install from Docker Desktop.
+Download and install from [Docker Desktop](https://docs.docker.com/engine/install/)
 
 ### **2️⃣ Install Poetry**
 Poetry is used to manage dependencies. Install it with:
@@ -47,18 +42,16 @@ Ollama is required for local LLM inference. Install it from:
 curl -fsSL https://ollama.com/install.sh | sh
 ```
 
-- Windows:
-Download and install from Ollama's website: [text](https://ollama.com/download)
+- **Windows:**
+Download and install from [Ollama's website](https://ollama.com/download)
 
 Ollama is used to generate answers from retrieved data. the model used is Mistral:
   ```bash
     ollama pull mistral
    ```
 
-## **⚙️ Setup**
-
-### ** Modifying Paths & Queries **
-Change this path to where your PDFs in cleaningText.py
+## **Modifying Paths & Queries**
+Change this path to where your PDFs in `cleaningText.py`
 ```bash
 pdf_path = 'put/your/path/here/data.pdf'
 ```
@@ -68,13 +61,11 @@ To query the RAG system, change this line in main.py:
 question = ''
 ```
 
-## **🔥 Running the Pipeline **
+## **🔥 Running the Pipeline**
 Once everything is installed, follow these steps:
-
  - Start Qdrant (Vector Database)
 ```bash
 docker run -p 6333:6333 -p 6334:6334 qdrant/qdrant 
-poetry run python main.py
 ```
 - Run the Main Pipeline
 ```bash
