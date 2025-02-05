@@ -5,7 +5,7 @@ A **Retrieval-Augmented Generation (RAG)** pipeline that integrates **Qdrant** f
 
 ## 📌 **Table of Contents**
 - [Installation](#-installation)
-- [Modifying Paths & Queries](#-modifying-paths--queries)
+- [Modifying Paths and Queries](#-modifying-paths-and-queries)
 - [Running the Pipeline](#-running-the-pipeline)
 
 ---
@@ -56,7 +56,7 @@ Change this path to where your PDFs in `cleaningText.py`
 pdf_path = 'put/your/path/here/data.pdf'
 ```
  
-To query the RAG system, change this line in main.py:
+To query the RAG system, change this line in `main.py:`
 ```bash
 question = ''
 ```
